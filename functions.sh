@@ -1,5 +1,12 @@
 #!/bin/bash
 
+function welcome() {
+    clear
+    echo -e "${normal}"
+    echo "=| $scriptTitle |="
+    sleep 2
+}
+
 function confirmation_form() {
     echo
     read -p "$confirmation_message_question" confirmForm
