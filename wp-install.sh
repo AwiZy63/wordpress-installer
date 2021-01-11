@@ -4,12 +4,12 @@
 clear
 
 # Chargement du fichier de traduction
-source ./translation.sh
-source ./functions.sh
-source ./get_dependencies.sh
-source ./colors.sh
+source ./wpi_functions_call.sh
 
 welcome
 
 # Vérification et installation des dépendances
 depends_verify
+
+# Création de base de données
+create_database

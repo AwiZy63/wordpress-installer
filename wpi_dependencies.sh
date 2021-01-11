@@ -1,8 +1,8 @@
 #!/bin/bash
 
 clear
-source ./colors.sh
-source ./functions.sh
+source ./wpi_colors.sh
+source ./wpi_functions.sh
 
 # Installation des dépendances manquantes
 
@@ -88,12 +88,12 @@ function depends_install() {
 
     if [ $curl ] && [ -e $apache2 ] && [ $php ] && [ $mariadb ] && [ $phpDepCount == 10 ]; then
         echo
-        echo -e "${light_green}$deps_installed${normal}"
+        echo -e "${light_green}[?] $deps_installed${normal}"
         sleep 2
         welcome
     else
         echo
-        echo -e "${red}$deps_installation_error${normal}"
+        echo -e "${red}[!] $deps_installation_error${normal}"
         sleep 0.2.5
         exit
     fi
@@ -130,9 +130,9 @@ function depends_verify() {
 
     # Vérification de l'existance de curl
     if [[ $curl ]]; then
-        echo -e "${light_green}Curl"
+        echo -e "${light_green}[*] Curl"
     else
-        echo -e "${red}Curl"
+        echo -e "${red}[X] Curl"
         installCurl=true
     fi
 
@@ -140,9 +140,9 @@ function depends_verify() {
 
     # Vérification de l'existance de mariadb-server
     if [[ $mariadb ]]; then
-        echo -e "${light_green}MariaDB (MySQL)"
+        echo -e "${light_green}[*] MariaDB (MySQL)"
     else
-        echo -e "${red}MariaDB (MySQL)"
+        echo -e "${red}[X] MariaDB (MySQL)"
         installMariadb=true
     fi
 
@@ -150,9 +150,9 @@ function depends_verify() {
 
     # Vérification de l'existance de apache2
     if [[ -e $apache2 ]]; then
-        echo -e "${light_green}Apache2"
+        echo -e "${light_green}[*] Apache2"
     else
-        echo -e "${red}Apache2"
+        echo -e "${red}[X] Apache2"
         installApache=true
     fi
 
@@ -160,9 +160,9 @@ function depends_verify() {
 
     # Vérification de l'existance de php
     if [[ $php ]]; then
-        echo -e "${light_green}PHP"
+        echo -e "${light_green}[*] PHP"
     else
-        echo -e "${red}PHP"
+        echo -e "${red}[X] PHP"
         installPhp=true
     fi
 
@@ -171,10 +171,10 @@ function depends_verify() {
     # Vérification des dépendances php
     # libapache2
     if [[ -e $libapache ]]; then
-        echo -e "${light_green}libapache2-mod-php"
+        echo -e "${light_green}[*] libapache2-mod-php"
         ((phpDepCount+=1))
     else
-        echo -e "${red}libapache2-mod-php"
+        echo -e "${red}[X] libapache2-mod-php"
         installLibapache=true
     fi
 
@@ -182,10 +182,10 @@ function depends_verify() {
 
     # php-mysql
     if [[ -e $php_mysql ]]; then
-        echo -e "${light_green}php-mysql"
+        echo -e "${light_green}[*] php-mysql"
         ((phpDepCount+=1))
     else
-        echo -e "${red}php-mysql"
+        echo -e "${red}[X] php-mysql"
         installPhpMysql=true
     fi
 
@@ -193,10 +193,10 @@ function depends_verify() {
 
     # php-curl
     if [[ -e $php_curl ]]; then
-        echo -e "${light_green}php-curl"
+        echo -e "${light_green}[*] php-curl"
         ((phpDepCount+=1))
     else
-        echo -e "${red}php-curl"
+        echo -e "${red}[X] php-curl"
         installPhpCurl=true
     fi
 
@@ -204,10 +204,10 @@ function depends_verify() {
 
     # php-gd
     if [[ -e $php_gd ]]; then
-        echo -e "${light_green}php-gd"
+        echo -e "${light_green}[*] php-gd"
         ((phpDepCount+=1))
     else
-        echo -e "${red}php-gd"
+        echo -e "${red}[X] php-gd"
         installPhpGd=true
     fi
 
@@ -215,10 +215,10 @@ function depends_verify() {
 
     # php-mbstring
     if [[ -e $php_mbstring ]]; then
-        echo -e "${light_green}php-mbstring"
+        echo -e "${light_green}[*] php-mbstring"
         ((phpDepCount+=1))
     else
-        echo -e "${red}php-mbstring"
+        echo -e "${red}[X] php-mbstring"
         installPhpMbstring=true
     fi
 
@@ -226,10 +226,10 @@ function depends_verify() {
 
     # php-xml
     if [[ -e $php_xml ]]; then
-        echo -e "${light_green}php-xml"
+        echo -e "${light_green}[*] php-xml"
         ((phpDepCount+=1))
     else
-        echo -e "${red}php-xml"
+        echo -e "${red}[X] php-xml"
         installPhpXml=true
     fi
 
@@ -237,10 +237,10 @@ function depends_verify() {
 
     # php-xmlrpc
     if [[ -e $php_xmlrpc ]]; then
-        echo -e "${light_green}php-xmlrpc"
+        echo -e "${light_green}[*] php-xmlrpc"
         ((phpDepCount+=1))
     else
-        echo -e "${red}php-xmlrpc"
+        echo -e "${red}[X] php-xmlrpc"
         installPhpXmlrpc=true
     fi
 
@@ -248,10 +248,10 @@ function depends_verify() {
 
     # php-soap
     if [[ -e $php_soap ]]; then
-        echo -e "${light_green}php-soap"
+        echo -e "${light_green}[*] php-soap"
         ((phpDepCount+=1))
     else
-        echo -e "${red}php-soap"
+        echo -e "${red}[X] php-soap"
         installPhpSoap=true
     fi
 
@@ -259,10 +259,10 @@ function depends_verify() {
 
     # php-intl
     if [[ -e $php_intl ]]; then
-        echo -e "${light_green}php-intl"
+        echo -e "${light_green}[*] php-intl"
         ((phpDepCount+=1))
     else
-        echo -e "${red}php-intl"
+        echo -e "${red}[X] php-intl"
         installPhpIntl=true
     fi
 
@@ -270,10 +270,10 @@ function depends_verify() {
 
     # php-zip
     if [[ -e $php_zip ]]; then
-        echo -e "${light_green}php-zip"
+        echo -e "${light_green}[*] php-zip"
         ((phpDepCount+=1))
     else
-        echo -e "${red}php-zip"
+        echo -e "${red}[X] php-zip"
         installPhpZip=true
     fi
 
@@ -281,12 +281,12 @@ function depends_verify() {
 
     if [ $curl ] && [ -e $apache2 ] && [ $php ] && [ $mariadb ] && [ $phpDepCount == 10 ]; then
         echo
-        echo -e "${light_green}$deps_already_installed"
+        echo -e "${light_green}[?] $deps_already_installed"
         sleep 2
         welcome
     else
         echo
-        echo -e "${light_cyan}$deps_missing${normal}"
+        echo -e "${light_cyan}[!] $deps_missing${normal}"
         sleep 3
         depends_install
     fi
