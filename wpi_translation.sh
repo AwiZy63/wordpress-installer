@@ -1,8 +1,8 @@
 #!/bin/bash
 
-source ./get_language.sh
+source ./wpi_language.sh
 
-get_language
+wpi_language
 
 if [[ $lang == "fr" ]]; then
 
@@ -14,6 +14,15 @@ if [[ $lang == "fr" ]]; then
 
 	enter_database_name="Entrez le nom de votre base de données : "
 	database_name_error="Le champ ne doit pas être vide !"
+
+	mysql_user_text="Veuillez renseigner un nom d'utilisateur mysql"
+	mysql_password_text="Veuillez renseigner un mot de passe (+ de 6 caractères) : "
+	default="defaut"
+	field_cant_be_empty="Les champs ne doivent pas être vide"
+	mysql_bad_username_password="Connexion à MySQL impossible, veuillez vérifier vos informations de connexion.."
+	mysql_bad_database_name="Connexion à MySQL impossible, la base de donnée n'existe pas"
+	mysql_success_create="Création de la base de donnée MySQL réussi !"
+	mysql_success_con="Connexion à MySQL réussi !"
 
 	# function confirmation
 
@@ -28,6 +37,7 @@ if [[ $lang == "fr" ]]; then
 	deps_already_installed="Toutes les dépendances sont déjà installées"
 	deps_missing="Des dépendances sont manquantes ! Installation.."
 
+
 else
 
 	# function welcome
@@ -37,7 +47,14 @@ else
 	# create_database.sh
 	
 	enter_database_name="Enter your database name : "
-	database_name_error="Field must not empty !"
+	database_field_error="Field must not empty !"
+
+	mysql_user_text="Please enter your mysql username"
+	mysql_password_text="Please enter password (+ de 6 characters) : "
+	default="default"
+	mysql_bad_username_password="Cannot connect to MySQL, please check your login details.."
+	mysql_bad_database_name="Cannot connect to MySQL, the database does not exist.."
+	mysql_success_con="Connection to MySQL successful !"
 
 	# function confirmation
 

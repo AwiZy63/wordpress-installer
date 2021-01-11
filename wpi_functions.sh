@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source wpi_colors.sh
+
 function welcome() {
     clear
     echo -e "${normal}"
@@ -9,7 +11,7 @@ function welcome() {
 
 function confirmation_form() {
     echo
-    read -p "$confirmation_message_question" confirmForm
+    read -n 1 -p "$confirmation_message_question" confirmForm
 
     case $confirmForm in
     [yY][eE][sS] | [yY] | [oO][uU][iI] | [oO])
