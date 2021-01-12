@@ -37,6 +37,23 @@ if [[ $lang == "fr" ]]; then
 	deps_already_installed="Toutes les dépendances sont déjà installées"
 	deps_missing="Des dépendances sont manquantes ! Installation.."
 
+	# wpi_webconfiguration.sh
+
+	install_directory_text="Où souhaitez vous installer wordpress ? : "
+	choose_valid_folder="Veuillez choisir un répertoire valide."
+	is_not_allowed="n'est pas autorisé"
+	use_custom_subdomain="Voulez vous utiliser un sous domaine ? [o/N] "
+	subdomain_text="Veuillez renseigner le sous domaine [exemple : wp1] : "
+	choose_valid_subdomain_name="Veuillez remplir un sous domaine valide"
+	choose_subdomain_only="Veuillez renseigner le sous domaine uniquement"
+	use_custom_port="Voulez vous utiliser un port personnalisé ? [o/N] : "
+	port_text="Choisissez un port : "
+	port_not_valid="n'est pas un port valide"
+	choose_valid_port="Entrez un port valide"
+	use_custom_domain="Voulez vous utiliser un nom de domaine ? [o/N] : "
+	custom_domain_text="Veuillez renseigner un nom de domaine [exemple : example.com] : "
+	choose_valid_domain="Entrez un nom de domaine valide"
+	error="ERREUR : Veuillez contacter le support"
 
 else
 
@@ -69,5 +86,22 @@ else
 	deps_already_installed="All dependencies are already installed"
 	deps_missing="Dependencies are missing! Installation.."
 	
+	# wpi_webconfiguration.sh
+
+	install_directory_text="Where do you want to install wordpress ? : "
+	choose_valid_folder="Please choose a valid directory."
+	is_not_allowed="is not allowed"
+	use_custom_subdomain="Do you want to use a subdomain ? [y/N] "
+	subdomain_text="Please enter the subdomain [example : wp1] : "
+	choose_valid_subdomain_name="Please fill in a valid subdomain"
+	choose_subdomain_only="Please enter the subdomain only"
+	use_custom_port="Do you want to use a custom port ? [y/N] : "
+	port_text="Choose a port : "
+	port_not_valid="is not a valid port"
+	choose_valid_port="Enter a valid port"
+	use_custom_domain="Do you want to use a domain name ? [y/N] : "
+	custom_domain_text="Please enter a domain name [example : example.com] : "
+	choose_valid_domain="Enter a valid domain name"
+	error="ERROR: Please contact support"
 
 fi

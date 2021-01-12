@@ -1,5 +1,8 @@
 #!/bin/bash
 
+source ./wpi_translation.sh
+source ./wpi_colors.sh
+
 function create_webconfiguration() {
     # Récuperation du répertoire du script d'installation actuel
     currentDirectory=$(pwd)
@@ -8,24 +11,21 @@ function create_webconfiguration() {
     while true; do
 
         # Création de la variable installDirectory (dossier d'installation wordpress)
-        read -p "Où souhaitez vous installer wordpress ? : " installDirectory
+        read -p "$install_directory_text" installDirectory
 
         if [[ ! $installDirectory ]]; then
             echo
-            echo -e "${red}Veuillez choisir un répertoire valide.${normal}"
+            echo -e "${light_cyan}$choose_valid_folder${normal}"
             echo
             sleep 3
         else
             if [[ $installDirectory == "/" ]]; then
                 echo
-                echo "Veuillez choisir un répertoire valide, / n'est pas autorisé"
+                echo -e "${light_cyan}$choose_valid_folder, ${red}/${light_cyan} $is_not_allowed${normal}"
                 echo
                 sleep 3
             else
-                mkdir -p $installDirectory
-                cd $installDirectory
-                vHostDirectory=$(pwd)
-                cd $currentDirectory
+                installDirectoryDefined=true
                 break
             fi
         fi
@@ -33,7 +33,7 @@ function create_webconfiguration() {
 
     # Utiliser un sous domaine
     while true; do
-        read -p "Voulez vous utiliser un sous domaine ? [o/N] : " vHostUsePrefix
+        read -p "$use_custom_subdomain" vHostUsePrefix
 
         case $vHostUsePrefix in
         [yY][eE][sS] | [yY] | [oO][uU][iI] | [oO])
@@ -50,18 +50,18 @@ function create_webconfiguration() {
     # vHost sous domaine personnalisé
     if [[ $vHostUsePrefix == true ]]; then
         while true; do
-            read -p "Veuillez renseigner le sous domaine [exemple : wp1] : " vHostPrefix
+            read -p "$subdomain_text" vHostPrefix
 
             echo $vHostPrefix >./prefixName.tmp
 
             if [[ ! $vHostPrefix ]]; then
                 echo
-                echo "Veuillez remplir un sous domaine valide"
+                echo -e "${light_cyan}$choose_valid_subdomain_name${normal}"
                 echo
                 sleep 3
             elif cat ./prefixName.tmp | grep '\.'; then
 
-                echo "Veuillez renseigner le sous domaine uniquement"
+                echo -e "${light_cyan}$choose_subdomain_only${normal}"
                 sleep 3
             elif grep -q '' "./prefixName.tmp"; then
                 break
@@ -70,9 +70,9 @@ function create_webconfiguration() {
 
         rm ./prefixName.tmp
     fi
-    # Utiliser un port personnaliser
+    # Utiliser un port personnalisé
     while true; do
-        read -p "Voulez vous utiliser un port personnalisé ? [o/N] : " vHostUsePort
+        read -p "$use_custom_port" vHostUsePort
 
         case $vHostUsePort in
         [yY][eE][sS] | [yY] | [oO][uU][iI] | [oO])
@@ -89,17 +89,17 @@ function create_webconfiguration() {
     if [[ $vHostUsePort == true ]]; then
         # vHost port personnalisé
         while true; do
-            read -p "Choisissez un port : " vHostPort
+            read -p "$port_text" vHostPort
             len=${#vHostPort}
             numbervar=$(echo "$vHostPort" | tr -dc '[:digit:]')
             if [[ $len -ne ${#numbervar} ]]; then
                 echo
-                echo "$vHostPort n'est pas un port valide"
+                echo -e "${red}$vHostPort $port_not_valid${normal}"
                 echo
                 sleep 3
             elif [[ ! $vHostPort ]]; then
                 echo
-                echo "Entrez un port valide"
+                echo -e "${light_cyan}$choose_valid_port${normal}"
                 echo
                 sleep 3
             else
@@ -108,36 +108,80 @@ function create_webconfiguration() {
         done
     fi
 
-    # Nom de domaine
+    # Utiliser un domaine personnalisé
     while true; do
-        read -p "Veuillez renseigner un nom de domaine [exemple : example.com] : " vHostDomain
-
-        echo $vHostDomain >domainName.tmp
-
-        if [ $vHostDomain ] && cat ./domainName.tmp | grep -q '\.'; then
+        read -p "$use_custom_domain" vHostUseDomain
+        case $vHostUseDomain in
+        [yY][eE][sS] | [yY] | [oO][uU][iI] | [oO])
+            vHostUseDomain=true
             break
-            sleep 3
-        else
-            echo "Entrez un nom de domaine valide"
-        fi
+            ;;
+        *)
+            vHostUseDomain=false
+            break
+            ;;
+        esac
     done
 
+    if [[ $vHostUseDomain == true ]]; then
+        # Nom de domaine
+        while true; do
+            read -p "$custom_domain_text" vHostDomain
+
+            echo $vHostDomain >domainName.tmp
+
+            if [ $vHostDomain ] && cat ./domainName.tmp | grep -q '\.'; then
+                break
+                sleep 3
+            else
+                echo -e "${light_cyan}$choose_valid_domain${normal}"
+            fi
+        done
+        rm ./domainName.tmp
+    fi
+
     # L'utilisateur utilise un port personnalisé
-    if [[ $vHostUsePort == "true" ]]; then
+    if [[ $vHostUsePort == true ]]; then
         vHostPort=$vHostPort
     else
         vHostPort=80
     fi
 
     # L'utilisateur utilise un sous domaine ou non
-    if [[ $vHostUsePrefix == "true" ]]; then
+    if [[ $vHostUsePrefix == true ]]; then
         vHostPrefix=$vHostPrefix
     else
         vHostPrefix="www"
     fi
 
+    # L'utilisateur utilise un sous domaine ou non
+    if [[ $vHostUseDomain == true ]]; then
+        vHostDomain=$vHostDomain
+    else
+        vHostDomain="localhost"
+    fi
+
+    if [[ $installDirectoryDefined == true ]]; then
+        mkdir -p $installDirectory
+        cd $installDirectory
+        vHostDirectory=$(pwd)
+        cd $currentDirectory
+    fi
+
     # Création de la nouvelle template
     cp ./templates/vhost-template.conf ./templates/vhost-wordpress.conf
+
+    if [[ $vHostUsePort == false ]]; then
+        sed -i -e "s/Listen/# Listen/g" templates/vhost-wordpress.conf
+    fi
+
+    if [ $vHostUseDomain == false ] && [ $vHostUsePrefix == false ]; then
+        sed -i -e "s/ServerName VHOST_PREFIX.VHOST_DOMAIN/# ServerName localhost/g" templates/vhost-wordpress.conf
+    fi
+
+    if [[ -e /etc/apache2/sites-enabled/000-default.conf ]]; then
+        sudo a2dissite 000-default.conf
+    fi
 
     if [ $vHostPort ] && [ $vHostPrefix ] && [ $vHostDomain ] && [ $vHostDirectory ]; then
         # Insertion des variables dans la template
@@ -148,17 +192,30 @@ function create_webconfiguration() {
 
         configuration_created=true
     else
-        echo "ERREUR : Veuillez contacter le support"
+        echo -e "${red}$error"
+    fi
+
+    vHostFileName="vhost-wordpress"
+    vHostFileNumber=1
+
+    if [[ -e /etc/apache2/sites-available/${vHostFileName}-${vHostFileNumber}.conf ]]; then
+        ((vHostFileNumber += 1))
+        while [[ -e /etc/apache2/sites-available/${vHostFileName}-${vHostFileNumber}.conf ]]; do
+            ((vHostFileNumber += 1))
+            if [[ ! -e /etc/apache2/sites-available/${vHostFileName}-${vHostFileNumber}.conf ]]; then
+                break
+            fi
+        done
     fi
 
     if [[ $configuration_created ]]; then
-        sudo cp ./templates/vhost-wordpress.conf /etc/apache2/sites-available/
+        sudo cp ./templates/vhost-wordpress.conf /etc/apache2/sites-available/${vHostFileName}-${vHostFileNumber}.conf
         rm ./templates/vhost-wordpress.conf
-        sudo a2ensite vhost-wordpress.conf
+        sudo a2ensite ${vHostFileName}-${vHostFileNumber}.conf
         sudo service apache2 start
         sudo service apache2 reload
     else
-        echo "Une erreur est survenue, veuillez contacter un support"
+        echo -e "${red}$error"
     fi
 
 }
