@@ -7,4 +7,3 @@ function wpi_language() {
 		lang="en"
 	fi
 }
-

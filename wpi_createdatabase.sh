@@ -7,7 +7,7 @@ source ./wpi_translation.sh
 mysql_create_user=true
 
 function create_database() {
-
+    sudo service mysql start
     function create_database_db() {
         #Création d'une base de donnée si l'utilisateur en veux un
         clear
