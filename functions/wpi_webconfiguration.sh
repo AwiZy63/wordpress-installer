@@ -1,14 +1,24 @@
 #!/bin/bash
 
-source ./wpi_translation.sh
-source ./wpi_colors.sh
+if [[ -e ./functions/ ]]; then
+    source ./functions/wpi_translation.sh
+    source ./functions/wpi_colors.sh
+    source ./functions/wpi_functions.sh
+else
+    source ./wpi_translation.sh
+    source ./wpi_colors.sh
+    source ./wpi_functions.sh
+fi
 
 function create_webconfiguration() {
+    clear
+    welcome
     # Récuperation du répertoire du script d'installation actuel
     currentDirectory=$(pwd)
 
     # Création du répertoire d'installation WordPress
     while true; do
+        echo
 
         # Création de la variable installDirectory (dossier d'installation wordpress)
         read -p "$install_directory_text" installDirectory
@@ -33,6 +43,7 @@ function create_webconfiguration() {
 
     # Utiliser un sous domaine
     while true; do
+        echo
         read -p "$use_custom_subdomain" vHostUsePrefix
 
         case $vHostUsePrefix in
@@ -50,6 +61,7 @@ function create_webconfiguration() {
     # vHost sous domaine personnalisé
     if [[ $vHostUsePrefix == true ]]; then
         while true; do
+            echo
             read -p "$subdomain_text" vHostPrefix
 
             echo $vHostPrefix >./prefixName.tmp
@@ -60,7 +72,6 @@ function create_webconfiguration() {
                 echo
                 sleep 3
             elif cat ./prefixName.tmp | grep '\.'; then
-
                 echo -e "${light_cyan}$choose_subdomain_only${normal}"
                 sleep 3
             elif grep -q '' "./prefixName.tmp"; then
@@ -72,6 +83,7 @@ function create_webconfiguration() {
     fi
     # Utiliser un port personnalisé
     while true; do
+        echo
         read -p "$use_custom_port" vHostUsePort
 
         case $vHostUsePort in
@@ -89,6 +101,7 @@ function create_webconfiguration() {
     if [[ $vHostUsePort == true ]]; then
         # vHost port personnalisé
         while true; do
+            echo
             read -p "$port_text" vHostPort
             len=${#vHostPort}
             numbervar=$(echo "$vHostPort" | tr -dc '[:digit:]')
@@ -110,6 +123,7 @@ function create_webconfiguration() {
 
     # Utiliser un domaine personnalisé
     while true; do
+        echo
         read -p "$use_custom_domain" vHostUseDomain
         case $vHostUseDomain in
         [yY][eE][sS] | [yY] | [oO][uU][iI] | [oO])
@@ -126,6 +140,7 @@ function create_webconfiguration() {
     if [[ $vHostUseDomain == true ]]; then
         # Nom de domaine
         while true; do
+            echo
             read -p "$custom_domain_text" vHostDomain
 
             echo $vHostDomain >domainName.tmp
@@ -168,8 +183,14 @@ function create_webconfiguration() {
         cd $currentDirectory
     fi
 
+    if [[ -e ./functions/ ]]; then
+        templateDir="./functions/templates"
+    else
+        templateDir="./templates"
+    fi
+
     # Création de la nouvelle template
-    cp ./templates/vhost-template.conf ./templates/vhost-wordpress.conf
+    cp $templateDir/vhost-template.conf $templateDir/vhost-wordpress.conf
 
     if [[ $vHostUsePort == false ]]; then
         sed -i -e "s/Listen/# Listen/g" templates/vhost-wordpress.conf
@@ -185,10 +206,11 @@ function create_webconfiguration() {
 
     if [ $vHostPort ] && [ $vHostPrefix ] && [ $vHostDomain ] && [ $vHostDirectory ]; then
         # Insertion des variables dans la template
-        sed -i -e "s/VHOST_PORT/${vHostPort}/g" templates/vhost-wordpress.conf
-        sed -i -e "s/VHOST_PREFIX/${vHostPrefix}/g" templates/vhost-wordpress.conf
-        sed -i -e "s/VHOST_DOMAIN/${vHostDomain}/g" templates/vhost-wordpress.conf
-        sed -i -e "s|VHOST_DIRECTORY|${vHostDirectory}|g" templates/vhost-wordpress.conf
+
+        sed -i -e "s/VHOST_PORT/${vHostPort}/g" $templateDir/vhost-wordpress.conf
+        sed -i -e "s/VHOST_PREFIX/${vHostPrefix}/g" $templateDir/vhost-wordpress.conf
+        sed -i -e "s/VHOST_DOMAIN/${vHostDomain}/g" $templateDir/vhost-wordpress.conf
+        sed -i -e "s|VHOST_DIRECTORY|${vHostDirectory}|g" $templateDir/vhost-wordpress.conf
 
         configuration_created=true
     else
@@ -209,13 +231,17 @@ function create_webconfiguration() {
     fi
 
     if [[ $configuration_created ]]; then
-        sudo cp ./templates/vhost-wordpress.conf /etc/apache2/sites-available/${vHostFileName}-${vHostFileNumber}.conf
-        rm ./templates/vhost-wordpress.conf
+        sudo cp $templateDir/vhost-wordpress.conf /etc/apache2/sites-available/${vHostFileName}-${vHostFileNumber}.conf
+        rm $templateDir/vhost-wordpress.conf
+
         sudo a2ensite ${vHostFileName}-${vHostFileNumber}.conf
         sudo service apache2 start
         sudo service apache2 reload
+        readyToInstall=true
     else
         echo -e "${red}$error"
+        #clear
+        exit
     fi
 
 }

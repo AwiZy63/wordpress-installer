@@ -1,9 +1,16 @@
 #!/bin/bash
 
 clear
-source ./wpi_colors.sh
-source ./wpi_functions.sh
-source ./wpi_translation.sh
+
+if [[ -e ./functions/ ]]; then
+    source ./functions/wpi_functions.sh
+    source ./functions/wpi_colors.sh
+    source ./functions/wpi_translation.sh
+else
+    source ./wpi_functions.sh
+    source ./wpi_colors.sh
+    source ./wpi_translation.sh
+fi
 
 # Installation des dépendances manquantes
 

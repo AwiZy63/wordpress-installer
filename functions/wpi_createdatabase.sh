@@ -1,13 +1,18 @@
 #!/bin/bash
 
-source ./wpi_functions.sh
-source ./wpi_colors.sh
-source ./wpi_translation.sh
-
-mysql_create_user=true
+if [[ -e ./functions/ ]]; then
+    source ./functions/wpi_functions.sh
+    source ./functions/wpi_colors.sh
+    source ./functions/wpi_translation.sh
+else
+    source ./wpi_functions.sh
+    source ./wpi_colors.sh
+    source ./wpi_translation.sh
+fi
 
 function create_database() {
-    sudo service mysql start
+    sudo service mysql start 
+    clear
     function create_database_db() {
         #Création d'une base de donnée si l'utilisateur en veux un
         clear
@@ -21,8 +26,10 @@ function create_database() {
             else
                 echo
                 echo -e "${red}[!] $database_field_error${normal}"
+                echo
                 sleep 1
                 clear
+                welcome
             fi
         done
     }
@@ -46,7 +53,12 @@ function create_database() {
                         break
                     fi
                 else
+                    echo
                     echo -e "${red}[!] $database_field_error${normal}"
+                    echo
+                    sleep 1
+                    clear
+                    welcome
                 fi
             done
         else
@@ -65,6 +77,29 @@ function create_database() {
             done
         fi
     }
+
+    while true; do
+        read -p "$create_new_db_user" create_new_user
+
+        case $create_new_user in
+        [yY][eE][sS] | [yY] | [oO][uU][iI] | [oO])
+            mysql_create_user=true
+            break
+            ;;
+        *)
+            echo
+            read -p "$confirmation_message_question" confirmation_response
+            case $confirmation_response in
+            [yY][eE][sS] | [yY] | [oO][uU][iI] | [oO])
+                echo
+                echo -e "${light_blue}$confirmation${normal}"
+                echo
+                break
+                ;;
+            esac
+            ;;
+        esac
+    done
 
     create_database_db
     create_database_user
@@ -86,14 +121,16 @@ function create_database() {
             fi
         else
             if [[ $mysql_create_user == true ]]; then
-                echo -e "${light_green}[*] $mysql_success_create"
+                echo -e "${light_green}[*] $mysql_success_create${normal}"
+                sleep 1
             else
                 echo -e "${light_green}[*] $mysql_success_con${normal}"
+                sleep 1
             fi
             database_created=true
             break
         fi
         # Suppression du fichier temporaire
-        rm checkCon.tmp
     done
+    rm checkCon.tmp
 }
