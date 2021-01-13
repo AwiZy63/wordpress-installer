@@ -1,8 +1,16 @@
 #!/bin/bash
 
 clear
-source ./wpi_colors.sh
-source ./wpi_functions.sh
+
+if [[ -e ./functions/ ]]; then
+    source ./functions/wpi_functions.sh
+    source ./functions/wpi_colors.sh
+    source ./functions/wpi_translation.sh
+else
+    source ./wpi_functions.sh
+    source ./wpi_colors.sh
+    source ./wpi_translation.sh
+fi
 
 # Installation des dépendances manquantes
 
@@ -35,52 +43,52 @@ function depends_install() {
     # Installation des dépendances php
 
     if [[ $installLibapache ]]; then
-        sudo apt-get install libapache2-mod-php
+        sudo apt-get install libapache2-mod-php -y
         ((phpDepCount+=1))
     fi
 
     if [[ $installPhpMysql ]]; then
-        sudo apt-get install php-mysql
+        sudo apt-get install php-mysql -y
         ((phpDepCount+=1))
     fi
 
     if [[ $installPhpCurl ]]; then
-        sudo apt-get install php-curl
+        sudo apt-get install php-curl -y
         ((phpDepCount+=1))
     fi
 
     if [[ $installPhpGd ]]; then
-        sudo apt-get install php-gd
+        sudo apt-get install php-gd -y
         ((phpDepCount+=1))
     fi
 
     if [[ $installPhpMbstring ]]; then
-        sudo apt-get install php-mbstring
+        sudo apt-get install php-mbstring -y
         ((phpDepCount+=1))
     fi
 
     if [[ $installPhpXml ]]; then
-        sudo apt-get install php-xml
+        sudo apt-get install php-xml -y
         ((phpDepCount+=1))
     fi
 
     if [[ $installPhpXmlrpc ]]; then
-        sudo apt-get install php-xmlrpc
+        sudo apt-get install php-xmlrpc -y
         ((phpDepCount+=1))
     fi
 
     if [[ $installPhpSoap ]]; then
-        sudo apt-get install php-soap
+        sudo apt-get install php-soap -y
         ((phpDepCount+=1))
     fi
 
     if [[ $installPhpIntl ]]; then
-        sudo apt-get install php-intl
+        sudo apt-get install php-intl -y
         ((phpDepCount+=1))
     fi
 
     if [[ $installPhpZip ]]; then
-        sudo apt-get install php-zip
+        sudo apt-get install php-zip -y
         ((phpDepCount+=1))
     fi
 

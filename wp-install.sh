@@ -4,7 +4,11 @@
 clear
 
 # Chargement du fichier de traduction
-source ./wpi_functions_call.sh
+if [[ -e ./functions/ ]]; then
+    source ./functions/wpi_functions_call.sh
+else
+    source ./wpi_functions_call.sh
+fi
 
 welcome
 
@@ -13,3 +17,9 @@ depends_verify
 
 # Création de base de données
 create_database
+
+# Création de la configuration web apache
+create_webconfiguration
+
+# Installation wordpress
+wordpress_install
