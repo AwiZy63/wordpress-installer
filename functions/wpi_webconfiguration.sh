@@ -193,11 +193,11 @@ function create_webconfiguration() {
     cp $templateDir/vhost-template.conf $templateDir/vhost-wordpress.conf
 
     if [[ $vHostUsePort == false ]]; then
-        sed -i -e "s/Listen/# Listen/g" templates/vhost-wordpress.conf
+        sed -i -e "s/Listen/# Listen/g" $templateDir/vhost-wordpress.conf
     fi
 
     if [ $vHostUseDomain == false ] && [ $vHostUsePrefix == false ]; then
-        sed -i -e "s/ServerName VHOST_PREFIX.VHOST_DOMAIN/# ServerName localhost/g" templates/vhost-wordpress.conf
+        sed -i -e "s/ServerName VHOST_PREFIX.VHOST_DOMAIN/# ServerName localhost/g" $templateDir/vhost-wordpress.conf
     fi
 
     if [[ -e /etc/apache2/sites-enabled/000-default.conf ]]; then
