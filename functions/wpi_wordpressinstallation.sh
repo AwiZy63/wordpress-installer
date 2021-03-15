@@ -50,7 +50,7 @@ function wordpress_install() {
             # Définition des permissions des fichiers/dossiers
             sudo find ${vHostDirectory}/wordpress/ -type d -exec chmod 750 {} \;
             sudo find ${vHostDirectory}/wordpress/ -type f -exec chmod 640 {} \;
-            sudo chown -R www-data:www-data ${vHostDirectory}/wordpress
+            sudo chown -R $USER:www-data ${vHostDirectory}/wordpress
         else
             if [[ ! $mysql_database_name ]]; then
                 missing1="($mysql_database_name_not_defined)"
